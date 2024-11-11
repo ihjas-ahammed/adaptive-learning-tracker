@@ -4,8 +4,10 @@ import { Stack } from 'expo-router'
 
 const RootLayout = () => {
   return (
-    <Stack>
-        <Stack.Screen name='index' options={{headerShown:false}}/>
+    <Stack screenOptions={{headerShown:false}}>
+        <Stack.Screen name='index' options={{title:"Adaptive Learning"}} />
+        <Stack.Screen name='sub' o/>
+        <Stack.Screen name='progress' />
     </Stack>
   )
 }
