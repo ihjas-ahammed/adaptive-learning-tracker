@@ -7,27 +7,37 @@ import { AnimatedCircularProgress, CircularProgress } from 'react-native-circula
 import { SafeAreaView } from 'react-native-safe-area-context';
 import progress from './progress';
 
+const getAverageProgress = (lst)=>{
+  let p = 0;
+  for(let i = 0; i < lst.length; i ++){
+    p += lst[i].progress/lst.length
+  }
+  return p
+}
 
 export default function App() {
 
-  let sujs = [
-    { id: 1, name: 'Physics', progress:30 },
-    { id: 2, name: 'Maths', progress:4 },
-    { id: 3, name: 'Chemistry', progress:5 },
-    {id: 4, name: 'Biology', progress: 7}
-
+  let defaultSubjects = [
+    { id: 1, name: 'Physics', progress:0, modules: [{id:1,name:"Electrostatics",progress:50}] },
+    { id: 2, name: 'Maths', progress:0, modules:[]},
+    { id: 3, name: 'Chemistry', progress:0, modules: []},
+    { id: 5, name: 'Computer Science', progress: 0, modules:[]},
+    { id: 6, name: 'Statistics', progress: 0,modules:[]},
+    { id: 7, name: 'Arabic', progress: 0,modules:[]},
+    { id: 8, name: 'English', progress: 0,modules:[]}
   ]
-  const [subjects, setSubjects] = useState(sujs)
+  const [subjects, setSubjects] = useState(defaultSubjects)
 
   
   const [totalP, setTotalP] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
-      let s = subjects == null ? subjects : sujs
+      let s = subjects == null ? subjects : defaultSubjects
       let k = 0
       for(let i = 0; i < s.length; i ++){
-        k += s[i].progress/s.length
+        let current = s[i]
+        k += current.modules.length == 0? current.progress/s.length: getAverageProgress(current.modules)/s.length
       }
       setTotalP(k);
 
@@ -39,8 +49,13 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
+
+
   const handlePress = (item) => {
-    router.push({ pathname: "sub", params: item,sub: subjects })
+    let data = JSON.parse("{}")
+    data["sub"] = subjects
+    data["id"] = item.id
+    router.push({ pathname: "sub", params: {data: JSON.stringify(data)} })
   }
 
   const itemView = ({ item }) => (
@@ -82,7 +97,7 @@ export default function App() {
             data={subjects}
             renderItem={itemView}
             keyExtractor={item => item.id}
-            className="m-3 mb-auto "
+            className="m-3 mb-5"
           />
 
         </View>
